@@ -59,11 +59,12 @@ public class RobotOperations {
             }
             return new RobotPlan(numberOfStones, days, robotActions);
         }
-        for (int i = numberOfStones; i > 2; i = i / 2) {
+        for (double i = numberOfStones; i > 2; i = i / 2d) {
             robotActions.add(RobotAction.CLONE);
             days++;
         }
         days += 2;
+        robotActions.add(RobotAction.DIG);
         return new RobotPlan(days, numberOfStones, robotActions);
     }
 }

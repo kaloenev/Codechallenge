@@ -23,16 +23,27 @@ public class RobotOperations {
      */
     public RobotPlan excavateStonesForDays(int days) {
         int numberOfStones = 0;
+        int numberOfRobots = 1;
         List<RobotAction> robotActions = new ArrayList<>();
+        // Edge cases of the days being equal to 0 and 1
+        if (days == 0) {
+            return new RobotPlan(days, numberOfStones, robotActions);
+        }
         if (days == 1) {
             robotActions.add(RobotAction.DIG);
             numberOfStones++;
         } else {
+            // Clone until the second to last day is reached
             for (int i = 0; i < days - 2; i++) {
                 robotActions.add(RobotAction.CLONE);
+                numberOfRobots *= 2;
             }
+            // Clone for all days except the last two, where the stones should be dug
+            // Digging in the last day only and cloning for the rest, works the same way as well
             for (int j = days - 2; j < days; j++) {
                 robotActions.add(RobotAction.DIG);
+                // add 1 stone for each robot
+                numberOfStones += numberOfRobots;
             }
         }
         return new RobotPlan(days, numberOfStones, robotActions);
@@ -52,18 +63,22 @@ public class RobotOperations {
     public RobotPlan daysRequiredToCollectStones(int numberOfStones) {
         List<RobotAction> robotActions = new ArrayList<>();
         int days = 0;
-        if (numberOfStones <= 2) {
-            for (int j = 0; j < numberOfStones; j++) {
-                robotActions.add(RobotAction.DIG);
-                days++;
-            }
+        // Edge cases of the stones being equal to 0 and 1
+        if (numberOfStones == 0) {
+            return new RobotPlan(days, numberOfStones, robotActions);
+        }
+        if (numberOfStones == 1) {
+            robotActions.add(RobotAction.DIG);
+            days++;
             return new RobotPlan(numberOfStones, days, robotActions);
         }
-        for (double i = numberOfStones; i > 2; i = i / 2d) {
+        // Divide the stones by 2 until an amount that could be dug in 1 day remains
+        for (double i = numberOfStones; i > 1; i = i / 2d) {
             robotActions.add(RobotAction.CLONE);
             days++;
         }
-        days += 2;
+        // Dig for the last day
+        days++;
         robotActions.add(RobotAction.DIG);
         return new RobotPlan(days, numberOfStones, robotActions);
     }
